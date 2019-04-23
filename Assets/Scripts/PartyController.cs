@@ -1,27 +1,100 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
-public class PartyController : MonoBehaviour
+public class PartyController : GroupController
 {
-    public float Gold;
-    public List<GameObject> Quests;
+    private GameObject parties;
     public List<MonoBehaviour> CurrentBehaviours;
+    public float idleTime;
+    public float fatigue;
+    public float fatigueRate = 0.1f;
+    private GameObject atInn;
+    private GameObject atQuest;
     // Start is called before the first frame update
     void Start()
     {
-        Travel travel = gameObject.AddComponent<Travel>();
-        travel.targetLocation = Quests[0];
-        CurrentBehaviours.Add(travel);    
+        parties = GameObject.Find("Parties");
+        transform.SetParent(parties.transform);
+        name = RandomWord.Noun() + " " + transform.parent.childCount.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!atInn) fatigue += fatigueRate * Time.deltaTime;
+        idleTime += Time.deltaTime;
         CurrentBehaviours.RemoveAll(behaviour => behaviour == null);
+        Quests.RemoveAll(Quest => Quest == null);
+        if (CurrentBehaviours.Count != 0)
+        {
+            idleTime = 0;
+            return;
+        }
+        if (Quests.Count > 0 && (!atInn || fatigue <=0) && (!atQuest))
+        {
+            idleTime = 0;
+            Travel travel = gameObject.AddComponent<Travel>();
+            GameObject Quest = Quests[0];
+            Quests.ForEach(
+                q => {
+                    if (Vector3.Distance(q.transform.position, transform.position) < Vector3.Distance(Quest.transform.position, transform.position))
+                    {
+                        Quest = q;
+                    }          
+                }
+            );
+            travel.targetLocation = Quest.transform.position;
+            CurrentBehaviours.Add(travel);
+        } else if (!atInn && !atQuest && idleTime > 1f)
+        {
+            idleTime = 0;
+            Travel travel = gameObject.AddComponent<Travel>();
+            travel.targetLocation = new Vector3(0f,0f,0f);
+            CurrentBehaviours.Add(travel);
+            Debug.Log("not at inn");
+        } //else if (atInn)
+        //{
+        //    //Vector2 pos = new Vector2(50f * Random.value - 25f, 50f * Random.value - 25f);
+        //    //GameObject quest = Instantiate(questPrefab, pos, Quaternion.identity);
+        //    //Quests.Add(quest);
+        //}
+
+
         // if CurrentBehaviours = 0
         //      if quest finnish quest
         //      if at inn get new quest
         //      else travle to inn
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Inn") atInn = collision.gameObject;
+        if (collision.gameObject.tag == "Quest") atQuest = collision.gameObject;
+
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Inn") atInn = null;
+        if (collision.gameObject.tag == "Quest") atQuest = null;
+
+    }
 }
+
+//Travel travel = gameObject.AddComponent<Travel>();
+//float distance = road.polygonCollider.Distance(GetComponent<Collider2D>()).distance + 0.2f;
+//int closetPoint = System.Array.FindIndex(road.polygonCollider.points, point => Vector3.Distance(road.transform.TransformPoint(point), transform.position) < distance);
+//Debug.Log(road.polygonCollider.points[closetPoint]);
+//travel.targetLocation = road.transform.TransformPoint(road.polygonCollider.points[closetPoint]); //road.transform.TransformPoint
+//CurrentBehaviours.Add(travel);    
+
+
+//Spline spline = road.spline;
+//Vector3 target;
+//float t = 0.3f;
+//Vector3 P0 = spline.GetPosition(4);
+//Vector3 P1 = spline.GetRightTangent(4);
+//Vector3 P2 = spline.GetLeftTangent(3);
+//Vector3 P3 = spline.GetPosition(3);
+//target = Mathf.Pow((1f - t), 3) * P0 + 3.0f*(1f - t)*(1f - t)*t*P1 + 3.0f * (1f - t) * t * t * P2 + Mathf.Pow(t, 3)*P3;

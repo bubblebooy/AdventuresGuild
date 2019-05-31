@@ -12,10 +12,11 @@ GameObject:
   - component: {fileID: 8533543627400617692}
   - component: {fileID: 3971962843656303603}
   - component: {fileID: 19203628145358281}
+  - component: {fileID: 8401271610704047622}
   - component: {fileID: 9155383072438593224}
   - component: {fileID: 1991593716225893927}
   - component: {fileID: 6894143471846756604}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Party
   m_TagString: Party
   m_Icon: {fileID: 0}
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2de1b942b05da0146b0f8f66a8bac96e, type: 3}
-  m_Color: {r: 1, g: 0.033018887, b: 0.033018887, a: 1}
+  m_Color: {r: 0, g: 0.2221446, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -131,6 +132,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.16, y: 0.16}
   m_EdgeRadius: 0
+--- !u!114 &8401271610704047622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76915004816825976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970e192096a6e8b4c951f8dd1a08db25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Characters: []
 --- !u!114 &9155383072438593224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,6 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Gold: 0
   Quests: []
+  CharacterList: {fileID: 0}
   CurrentBehaviours: []
   idleTime: 0
   fatigue: 0
@@ -207,7 +222,7 @@ MonoBehaviour:
   maxAcceleration: -2.5
   rotationSpeed: 360
   slowdownDistance: 0.6
-  pickNextWaypointDist: 2
+  pickNextWaypointDist: 0.45
   endReachedDistance: 0.2
   alwaysDrawGizmos: 1
   slowWhenNotFacingTarget: 1

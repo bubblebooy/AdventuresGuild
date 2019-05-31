@@ -13,11 +13,12 @@ public class PartyController : GroupController
     private GameObject atInn;
     private GameObject atQuest;
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
         parties = GameObject.Find("Parties");
         transform.SetParent(parties.transform);
         name = RandomWord.Noun() + " " + transform.parent.childCount.ToString();
+        base.Start();
     }
 
     // Update is called once per frame
@@ -25,14 +26,14 @@ public class PartyController : GroupController
     {
         if (!atInn) fatigue += fatigueRate * Time.deltaTime;
         idleTime += Time.deltaTime;
-        CurrentBehaviours.RemoveAll(behaviour => behaviour == null);
-        Quests.RemoveAll(Quest => Quest == null);
+        CurrentBehaviours.RemoveAll(behaviour => behaviour == null);  // should i do this less often?
+        Quests.RemoveAll(Quest => Quest == null);                     // should i do this less often?
         if (CurrentBehaviours.Count != 0)
         {
             idleTime = 0;
             return;
         }
-        if (Quests.Count > 0 && (!atInn || fatigue <=0) && (!atQuest))
+        if (Quests.Count > 0 && (!atInn || fatigue <=0) && (!atQuest) && CharacterList.Characters.Count >= 4)
         {
             idleTime = 0;
             Travel travel = gameObject.AddComponent<Travel>();
@@ -53,19 +54,8 @@ public class PartyController : GroupController
             Travel travel = gameObject.AddComponent<Travel>();
             travel.targetLocation = new Vector3(0f,0f,0f);
             CurrentBehaviours.Add(travel);
-            Debug.Log("not at inn");
-        } //else if (atInn)
-        //{
-        //    //Vector2 pos = new Vector2(50f * Random.value - 25f, 50f * Random.value - 25f);
-        //    //GameObject quest = Instantiate(questPrefab, pos, Quaternion.identity);
-        //    //Quests.Add(quest);
-        //}
+        }
 
-
-        // if CurrentBehaviours = 0
-        //      if quest finnish quest
-        //      if at inn get new quest
-        //      else travle to inn
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
